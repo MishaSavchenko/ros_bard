@@ -1,0 +1,4 @@
+digraph G {
+	graph [beautify=false layout=sfdp repulsiveforce=10.0 voro_margin=1.0]
+	node [shape=box]
+}

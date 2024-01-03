@@ -1,0 +1,15 @@
+digraph G {
+	graph [beautify=false layout=sfdp repulsiveforce=10.0 voro_margin=1.0]
+	node [shape=box]
+	move_group -> rviz2 [label="/display_planned_path"]
+	joint_state_broadcaster -> robot_state_publisher [label="/joint_states"]
+	joint_state_broadcaster -> move_group_private_94863005551552 [label="/joint_states"]
+	rviz2 -> move_group_private_94863005551552 [label="/planning_scene"]
+	rviz2 -> move_group_private_94863005551552 [label="/planning_scene_world"]
+	robot_state_publisher -> transform_listener_impl_55a69b13da50 [label="/tf"]
+	robot_state_publisher -> transform_listener_impl_564703bfb090 [label="/tf"]
+	static_transform_publisher -> transform_listener_impl_55a69b13da50 [label="/tf_static"]
+	static_transform_publisher -> transform_listener_impl_564703bfb090 [label="/tf_static"]
+	robot_state_publisher -> transform_listener_impl_55a69b13da50 [label="/tf_static"]
+	robot_state_publisher -> transform_listener_impl_564703bfb090 [label="/tf_static"]
+}
