@@ -10,28 +10,17 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 # find_package(graphiz REQUIRED)
 INCLUDE_DIRECTORIES(SYSTEM "/usr/include/graphviz/")
-# find_package(PkgConfig REQUIRED)
-# pkg_check_modules(cgraph IMPORTED_TARGET ${PROJECT_NAME})
-# pkg_check_modules(gvc IMPORTED_TARGET ${PROJECT_NAME})
-# find_package(cgraph REQUIRED)
 
-# find_package(libgvc REQUIRED)
-# find_package(graphviz REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+# add_executable(rmw_test scripts/rmw_test.cpp)
+# ament_target_dependencies(rmw_test rclcpp)
 
-add_executable(rmw_test scripts/rmw_test.cpp)
-ament_target_dependencies(rmw_test rclcpp)
+# add_executable(graphviz_test scripts/graphviz_test.cpp)
+# target_link_libraries(graphviz_test cgraph gvc)
 
-add_executable(graphviz_test scripts/graphviz_test.cpp)
-# ament_target_dependencies(graphviz_test cgraph gvc)
-target_link_libraries(graphviz_test cgraph gvc)
+# install(TARGETS
+#   graphviz_test
+#   DESTINATION lib/${PROJECT_NAME})
 
-
-install(TARGETS
-  graphviz_test
-  DESTINATION lib/${PROJECT_NAME})
 
 
 
