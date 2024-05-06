@@ -1,9 +1,3 @@
-from ros2node.verb import VerbExtension
-from ros2node.api import NodeNameCompleter
-from ros2node.api import INFO_NONUNIQUE_WARNING_TEMPLATE
-from ros2action.api import get_action_names
-from ros2action.api import get_action_clients_and_servers
-
 import xmlrpc
 from ros2cli.node.strategy import NodeStrategy
 
@@ -65,16 +59,20 @@ def get_node_data(node, remote_node_name, include_hidden=True):
 
 data = {}
 
-def main(frequency=10, 
+def main(frequency=30, 
          include_hidden=True, 
          verbose=False):
 
-    save_file = open("/home/misha/code/ros_bard_ws/src/ros_bard/data/test.txt", "a")
+    current_time = datetime.now()
+    formatted_time = current_time.strftime('%Y%m%d%H%M%S')
+    save_file = open("/home/misha/code/ros_bard_ws/src/ros_bard/data/yaml_files/"+formatted_time+".json", "a")
+    last_time_stamp = 0
     try:
         with NodeStrategy(None) as node:
             while True:
                 time_stamp = datetime.now().timestamp()
-                data[time_stamp] = {}
+                # data[time_stamp] = {}
+                new_data = {}
                 start_time = time.time()
 
                 node_names = get_node_names(
@@ -82,37 +80,32 @@ def main(frequency=10,
 
                 for n in node_names:
                     try: 
-                        data[time_stamp][n.full_name] = get_node_data(node, n.full_name, time_stamp)
+                        new_data[n.full_name] = get_node_data(node, n.full_name, time_stamp)
                     except xmlrpc.client.Fault as e:
                         print(e)
                         continue
-                    # if verbose: 
-                    #     print(remote_node_name)
-                    #     print('  Subscribers:')
-                    #     print_names_and_types(subscribers)
-                    #     print('  Publishers:')
-                    #     print_names_and_types(publishers)
-                    #     print('  Service Servers:')
-                    #     print_names_and_types(service_servers)
-                    #     print('  Service Clients:')
-                    #     print_names_and_types(service_clients)
-                    #     print('  Action Servers:')
-                    #     print_names_and_types(actions_servers)
-                    #     print('  Action Clients:')
-                    #     print_names_and_types(actions_clients)
 
-                    # pprint(data[time_stamp])
                 end_time = time.time()
-                # with open('person_data.pkl', 'wb') as fp:
+                if last_time_stamp in data.keys():
+                    diff = DeepDiff(new_data, 
+                                    data[last_time_stamp], 
+                                    ignore_order=True, 
+                                    report_repetition=True)
+                    if len(diff) != 0: 
+                        data[time_stamp] = new_data
+                        last_time_stamp = time_stamp
+                else: 
+                    data[time_stamp] = new_data
+                    last_time_stamp = time_stamp
 
                 if verbose:
                     print("Loop time :", end_time - start_time)
                 time.sleep(1/frequency)
+                
     except KeyboardInterrupt:
-        # print("keyboard interupt")
         json.dump(data, save_file)
         pass
 
 if __name__ == "__main__":
-    main(frequency=10, 
+    main(frequency=30,
          include_hidden=True)
