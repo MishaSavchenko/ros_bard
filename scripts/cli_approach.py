@@ -65,7 +65,7 @@ def main(frequency=30,
 
     current_time = datetime.now()
     formatted_time = current_time.strftime('%Y%m%d%H%M%S')
-    save_file = open("/home/misha/code/ros_bard_ws/src/ros_bard/data/yaml_files/"+formatted_time+".json", "a")
+    save_file = open("/home/misha/code/ros_bard_ws/src/ros_bard/data/json_files/"+formatted_time+".json", "a")
     last_time_stamp = 0
     try:
         with NodeStrategy(None) as node:

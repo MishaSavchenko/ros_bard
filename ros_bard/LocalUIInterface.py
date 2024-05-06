@@ -19,9 +19,9 @@ class LocalUIInterface:
 
     def __init__(self):
         self.data_interface  = LocalDataInterface()
-        # test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/yaml_files/20240210102622.json"
-        # test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/yaml_files/20240210102018.json"
-        test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/yaml_files/20240210102505.json"
+        # test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/json_files/20240210102622.json"
+        # test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/json_files/20240210102018.json"
+        test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/json_files/20240210102505.json"
         self.data_interface.load_data(test_file)
 
         loader = QUiLoader()
