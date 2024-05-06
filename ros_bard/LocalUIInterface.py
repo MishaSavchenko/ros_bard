@@ -54,3 +54,8 @@ class LocalUIInterface:
 
         self.elements_of_interest["current_status"].setText(current_text)
         self.elements_of_interest["last_status"].setText(previous_text)
+
+
+    def run(self):
+        self.window.show()
+        self.app.exec()
