@@ -3,6 +3,14 @@ import yaml
 from copy import deepcopy
 from pprint import pprint, pformat
 from datetime import datetime
+from enum import Enum
+
+from ros_bard.DataFormatter import DataFormatter 
+
+class Formatter(Enum):
+    HOMEBREW = 0
+    JSON = 1
+    YAML = 2
 
 class LocalDataInterface: 
     
@@ -16,8 +24,10 @@ class LocalDataInterface:
 
     data_container = []
 
+    formatter: DataFormatter = None
+
     def __init__(self):
-        pass
+        self.formatter = DataFormatter()
 
     def load_data(self, file):
         with open(file, "r") as file:
@@ -27,7 +37,7 @@ class LocalDataInterface:
     
     def parse_data(self, data):
         ordered_timestamps = sorted(data.keys(), key=lambda ts: float(ts))
-        
+
         for ots in ordered_timestamps: 
 
             entry = data[ots]
@@ -35,7 +45,7 @@ class LocalDataInterface:
 
             self.data_container.append(entry)
 
-    def at(self, indx, json_format=True):
+    def at(self, indx, format: Formatter = Formatter.HOMEBREW):
         if indx >= len(self.data_container): 
             raise IndexError
 
@@ -48,13 +58,20 @@ class LocalDataInterface:
 
         self.current_title_text = str(datetime.fromtimestamp(curr_data_point.pop("timestamp")))
 
-        if json_format:
-            self.previous_text = pformat(prev_data_point, indent=4)
-            self.current_text = pformat(curr_data_point, indent=4)
+        self.previous_text = self.formatter.format(prev_data_point)
+        self.current_text = self.formatter.format(curr_data_point)
 
-        else: 
-            self.previous_text =yaml.dump(prev_data_point, sort_keys=False)
-            self.current_text = yaml.dump(curr_data_point, sort_keys=False)
+        # if format == Formatter.HOMEBREW:
+        #     self.previous_text = pformat(prev_data_point, indent=4)
+        #     self.current_text = pformat(curr_data_point, indent=4)
+
+        # elif format == Formatter.JSON:
+        #     self.previous_text = pformat(prev_data_point, indent=4)
+        #     self.current_text = pformat(curr_data_point, indent=4)
+
+        # elif format == Formatter.YAML:
+        #     self.previous_text =yaml.dump(prev_data_point, sort_keys=False)
+        #     self.current_text = yaml.dump(curr_data_point, sort_keys=False)
 
         return self.previous_title_text, \
                 self.previous_text, \
