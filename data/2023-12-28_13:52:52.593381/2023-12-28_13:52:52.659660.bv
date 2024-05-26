@@ -1,9 +1,0 @@
-digraph G {
-	graph [beautify=false layout=sfdp repulsiveforce=10.0 voro_margin=1.0]
-	node [shape=box]
-	move_group -> _NODE_NAME_UNKNOWN_ [label="/display_planned_path"]
-	joint_state_broadcaster -> _NODE_NAME_UNKNOWN_ [label="/joint_states"]
-	move_group_private_93893146480624 -> _NODE_NAME_UNKNOWN_ [label="/monitored_planning_scene"]
-	_NODE_NAME_UNKNOWN_ -> _NODE_NAME_UNKNOWN_ [label="/tf"]
-	_NODE_NAME_UNKNOWN_ -> _NODE_NAME_UNKNOWN_ [label="/tf_static"]
-}

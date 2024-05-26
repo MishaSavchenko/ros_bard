@@ -1,6 +1,9 @@
+#!/usr/bin/python3
+
 import os
-from ros_bard.LocalUIInterface import LocalUIInterface
 from ament_index_python.packages import get_package_share_directory
+
+from ros_bard.LocalUIInterface import LocalUIInterface
 
 if __name__ == "__main__":
     ros_bard_path = get_package_share_directory('ros_bard')
