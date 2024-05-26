@@ -1,5 +1,8 @@
 from copy import deepcopy
 from PySide6.QtWidgets import QTreeWidgetItem
+from PySide6 import QtGui
+import re
+
 from enum import Enum
 
 NAME_PARSER = {
@@ -13,6 +16,12 @@ NAME_PARSER = {
 }
 
 FORMAT_TEMPLATE = "{:<10} {:<50} {:>40}\n"
+
+class CustomColors(Enum):
+    RED = QtGui.QColor(239, 91, 91, 255)
+    GREEN = QtGui.QColor(113, 247, 159, 255)
+    YELLOW = QtGui.QColor(240, 201, 135, 255)
+    GRAY = QtGui.QColor(125, 132, 145, 255)
 
 class ReturnType(Enum):
     STRING = 0
@@ -58,8 +67,7 @@ class DataFormatter:
     def format_node(self, node:dict):
         output_str = ""
         output_str += FORMAT_TEMPLATE.format(" "," "," ")
-        # print(node)
-        # input()
+
         for data_type, data in list(node.items()):
             if data_type == "name":
                 output_str += FORMAT_TEMPLATE.format(NAME_PARSER[data_type], " ", " ")
@@ -68,6 +76,7 @@ class DataFormatter:
                 output_str += FORMAT_TEMPLATE.format(NAME_PARSER[data_type], " ", " ")
                 output_str += self.format_interface_data(data)
         return output_str
+    
     @staticmethod
     def to_tree(data_point):
         tree_nodes = []
@@ -93,3 +102,37 @@ class DataFormatter:
                 output_str += FORMAT_TEMPLATE.format(" ", d[0], d[1][0])
             return output_str
         return output_str
+
+    @staticmethod
+    def paint_tree_data(previous_tree, current_tree, diff):
+        if "dictionary_item_removed" in diff.keys():
+            for removed in diff["dictionary_item_removed"]:
+                try:
+                    node_name = re.search("root\[\'(.*)\'\]", removed).group(1)
+                    for tree_node in previous_tree:
+                        if tree_node.text(0) == node_name:
+                            DataFormatter.paint_node(tree_node, CustomColors.RED.value)
+                except AttributeError:
+                    continue
+
+        if "dictionary_item_added" in diff.keys():
+            for removed in diff["dictionary_item_added"]:
+                try:
+                    node_name = re.search("root\[\'(.*)\'\]", removed).group(1)
+                    for tree_node in current_tree:
+                        if tree_node.text(0) == node_name:
+                            DataFormatter.paint_node(tree_node, CustomColors.GREEN.value)
+                except AttributeError:
+                    continue
+
+    @staticmethod
+    def paint_node(node, color, columns=2):
+        for i in range(2):    
+            if node.columnCount() != columns and node.childCount() == 0:
+                node.setForeground(i, CustomColors.GRAY.value)
+            else: 
+                node.setForeground(i, color)
+
+        for j in range(node.childCount()):
+            DataFormatter.paint_node(node.child(j), color)
+

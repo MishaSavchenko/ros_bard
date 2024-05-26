@@ -7,6 +7,7 @@ from enum import Enum
 
 from ros_bard.DataFormatter import DataFormatter 
 
+from deepdiff import DeepDiff
 
 class LocalDataInterface: 
     
@@ -56,6 +57,9 @@ class LocalDataInterface:
 
         self.previous_text = self.formatter.format(prev_data_point)
         self.current_text = self.formatter.format(curr_data_point)
+
+        diff = DeepDiff(prev_data_point, curr_data_point, ignore_order=True, report_repetition=True)
+        self.formatter.paint_tree_data(self.previous_text, self.current_text, diff)
 
         return self.previous_title_text, \
                 self.previous_text, \
