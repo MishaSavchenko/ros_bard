@@ -18,8 +18,9 @@ class LocalUIInterface:
                             "next": None,
                             }
 
-    def __init__(self):
+    def __init__(self, ui_file: str):
         self.data_interface  = LocalDataInterface()
+        # for now just load either one of these json file with a bunch of data in it
         # test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/json_files/20240210102622.json"
         # test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/json_files/20240210102018.json"
         test_file = "/home/misha/code/ros_bard_ws/src/ros_bard/data/json_files/20240210102505.json"
@@ -27,8 +28,7 @@ class LocalUIInterface:
 
         loader = QUiLoader()
         self.app = QtWidgets.QApplication(sys.argv)
-        # self.window = loader.load("/home/misha/code/ros_bard_ws/untitled.ui", None)
-        self.window = loader.load("/home/misha/code/ros_bard_ws/tree_and_text_layout.ui", None)
+        self.window = loader.load(ui_file, None)
         
         self.find_objects_of_interst(self.window)
 
