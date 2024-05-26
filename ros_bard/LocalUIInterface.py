@@ -26,15 +26,25 @@ class LocalUIInterface:
 
         loader = QUiLoader()
         self.app = QtWidgets.QApplication(sys.argv)
-        self.window = loader.load("/home/misha/code/ros_bard_ws/untitled.ui", None)
+        # self.window = loader.load("/home/misha/code/ros_bard_ws/untitled.ui", None)
+        self.window = loader.load("/home/misha/code/ros_bard_ws/tree_and_text_layout.ui", None)
+        
         self.find_objects_of_interst(self.window)
+
+        self.setup_style()
         self.setup_events()
+        self.update_data()
 
     def find_objects_of_interst(self, ui_object):
         for child in ui_object.children():
             if child.objectName() in self.elements_of_interest.keys(): 
                     self.elements_of_interest[child.objectName()] = child 
             self.find_objects_of_interst(child)
+
+    def setup_style(self):
+        self.elements_of_interest["current_status"].setHeaderLabels(["Name", "Type"])
+        self.elements_of_interest["last_status"].setHeaderLabels(["Name", "Type"])         
+
 
     def setup_events(self):
         self.elements_of_interest["next"].clicked.connect(self.data_interface.next)
@@ -45,16 +55,18 @@ class LocalUIInterface:
 
     def update_data(self):
         previous_title_text, \
-        previous_text, \
+        previous_data, \
         current_title_text, \
-        current_text = self.data_interface.get_data()
+        current_data = self.data_interface.get_data()
+        
+        self.elements_of_interest["last_status"].clear()
+        self.elements_of_interest["last_status"].addTopLevelItems(previous_data)
+        
+        self.elements_of_interest["current_status"].clear()
+        self.elements_of_interest["current_status"].addTopLevelItems(current_data)
         
         self.elements_of_interest["current_title"].setText(current_title_text)
         self.elements_of_interest["last_title"].setText(previous_title_text)
-
-        self.elements_of_interest["current_status"].setText(current_text)
-        self.elements_of_interest["last_status"].setText(previous_text)
-
 
     def run(self):
         self.window.show()

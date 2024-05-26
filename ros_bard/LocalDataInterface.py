@@ -7,10 +7,6 @@ from enum import Enum
 
 from ros_bard.DataFormatter import DataFormatter 
 
-class Formatter(Enum):
-    HOMEBREW = 0
-    JSON = 1
-    YAML = 2
 
 class LocalDataInterface: 
     
@@ -45,7 +41,7 @@ class LocalDataInterface:
 
             self.data_container.append(entry)
 
-    def at(self, indx, format: Formatter = Formatter.HOMEBREW):
+    def at(self, indx):
         if indx >= len(self.data_container): 
             raise IndexError
 
@@ -60,18 +56,6 @@ class LocalDataInterface:
 
         self.previous_text = self.formatter.format(prev_data_point)
         self.current_text = self.formatter.format(curr_data_point)
-
-        # if format == Formatter.HOMEBREW:
-        #     self.previous_text = pformat(prev_data_point, indent=4)
-        #     self.current_text = pformat(curr_data_point, indent=4)
-
-        # elif format == Formatter.JSON:
-        #     self.previous_text = pformat(prev_data_point, indent=4)
-        #     self.current_text = pformat(curr_data_point, indent=4)
-
-        # elif format == Formatter.YAML:
-        #     self.previous_text =yaml.dump(prev_data_point, sort_keys=False)
-        #     self.current_text = yaml.dump(curr_data_point, sort_keys=False)
 
         return self.previous_title_text, \
                 self.previous_text, \

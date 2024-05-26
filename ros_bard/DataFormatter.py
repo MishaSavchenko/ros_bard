@@ -1,6 +1,6 @@
 from copy import deepcopy
-
-from pprint import pprint
+from PySide6.QtWidgets import QTreeWidgetItem
+from enum import Enum
 
 NAME_PARSER = {
     'act_clients': "Action Clients",
@@ -12,18 +12,33 @@ NAME_PARSER = {
     'name': "Name"
 }
 
-# FORMAT_TEMPLATE = "\n\t{: <10}{: ^10}{: ^10}{: >5}\n"
 FORMAT_TEMPLATE = "{:<10} {:<50} {:>40}\n"
 
+class ReturnType(Enum):
+    STRING = 0
+    TREE = 1
+    # JSON = 2
+    # YAML = 3
 
 class DataFormatter:
 
     _remove_hidden_nodes: bool 
-
-    def __init__(self, remove_hidden_nodes=True):
+    _format: ReturnType
+    def __init__(self,
+                 remove_hidden_nodes:bool = True, 
+                 format:ReturnType = ReturnType.TREE):
         self._remove_hidden_nodes = remove_hidden_nodes
+        self._format = format
 
     def format(self, data: dict):
+        if self._format == ReturnType.STRING: 
+            return self.to_string(data)
+        elif self._format == ReturnType.TREE:
+            return self.to_tree(data)
+        else: 
+            raise TypeError
+    
+    def to_string(self, data: dict):
         res_data = deepcopy(data)
         
         if self._remove_hidden_nodes:
@@ -32,29 +47,13 @@ class DataFormatter:
                     del res_data[node]
 
         output_str = ""
-        # # printing Aligned Header 
         output_str += FORMAT_TEMPLATE.format(" "," "," ")
         
-        # printing values of variables in Aligned manner 
-        # for i in range(0, 4): 
-            # print(f"{names[i] : <10}{marks[i] : ^10}{div[i] : ^10}{id[i] : >5}") 
         for k,v in res_data.items():
             output_str += self.format_node(v)
             output_str += "---"
-        # for key, value in list(res_data.items()):
-        #     # print(key)
-        #     # pprint(value)
-        #     for data_type, data in value.items():
-        #         if data_type == "name":
-        #             output_str += FORMAT_TEMPLATE.format(NAME_PARSER[data_type], data, " ")
-        #         else:
-        #             output_str += FORMAT_TEMPLATE.format(NAME_PARSER[data_type], " ", " ")
-        #             output_str += self.format_interface_data(data)
-        #     # print(output_str)
-        #     # # print(self.replace_empty_list('sub', value['sub']))
-        #     # exit()
+        
         return output_str
-    
 
     def format_node(self, node:dict):
         output_str = ""
@@ -69,25 +68,28 @@ class DataFormatter:
                 output_str += FORMAT_TEMPLATE.format(NAME_PARSER[data_type], " ", " ")
                 output_str += self.format_interface_data(data)
         return output_str
-    
+    @staticmethod
+    def to_tree(data_point):
+        tree_nodes = []
+
+        for node_name, node in data_point.items():
+            tree_node = QTreeWidgetItem((node_name, ))
+            for data_type, data in node.items():
+                data_node = QTreeWidgetItem((NAME_PARSER[data_type],))
+                if data_type == "name":
+                    continue
+                for d in data:
+                    data_node.addChild( QTreeWidgetItem((d[0], d[1][0]) ) )
+                tree_node.addChild(data_node)
+            tree_nodes.append(tree_node)
+        
+        return tree_nodes
+
     @staticmethod
     def format_interface_data(data):
         output_str = ""
         if isinstance(data, list):
-            # output_str += "\n{} :".format(data_type)
             for d in data:
                 output_str += FORMAT_TEMPLATE.format(" ", d[0], d[1][0])
             return output_str
         return output_str
-
-        # if len(data) == 0: 
-        #     if isinstance(data, list): 
-        #         output_str += FORMAT_TEMPLATE.format()
-        #         return '\n{} : N/A'.format(data_type)
-        # else: 
-        #     if isinstance(data, list):
-        #         output_str += "\n{} :".format(data_type)
-        #         for d in data:
-        #             output_str+='\n\t{} [ {} ]'.format(d[0], d[1][0])
-        #         return output_str
-        # return '\n'
