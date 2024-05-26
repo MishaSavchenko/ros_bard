@@ -48,12 +48,19 @@ class LocalDataInterface:
 
         self.index = indx
 
-        prev_data_point = deepcopy(self.data_container[indx - 1])
-        curr_data_point = deepcopy(self.data_container[indx])
+        if indx == 0:
+            prev_data_point = {}
+            curr_data_point = deepcopy(self.data_container[indx])
 
-        self.previous_title_text = str(datetime.fromtimestamp(prev_data_point.pop("timestamp")))
+            self.previous_title_text = "N/A"
+            self.current_title_text = str(datetime.fromtimestamp(curr_data_point.pop("timestamp")))
 
-        self.current_title_text = str(datetime.fromtimestamp(curr_data_point.pop("timestamp")))
+        else:
+            prev_data_point = deepcopy(self.data_container[indx-1])
+            curr_data_point = deepcopy(self.data_container[indx])
+        
+            self.previous_title_text = str(datetime.fromtimestamp(prev_data_point.pop("timestamp")))
+            self.current_title_text = str(datetime.fromtimestamp(curr_data_point.pop("timestamp")))
 
         self.previous_text = self.formatter.format(prev_data_point)
         self.current_text = self.formatter.format(curr_data_point)
@@ -70,9 +77,11 @@ class LocalDataInterface:
         return self.at(self.index)
 
     def next(self):
-        self.index = (self.index + 1) % len(self.data_container)
-        print("new index :", self.index)
+        if self.index != len(self.data_container) - 1:
+           self.index = (self.index + 1) % len(self.data_container)
 
     def prev(self):
-        self.index = (self.index - 1) % len(self.data_container)
-        print("new index :",self.index)
+        if self.index == 0:
+            self.index = 0
+        else:
+            self.index = (self.index - 1) % len(self.data_container)
