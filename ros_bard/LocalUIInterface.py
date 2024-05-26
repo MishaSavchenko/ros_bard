@@ -1,6 +1,7 @@
 import sys
 
 from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtWidgets import QHeaderView
 from PySide6.QtUiTools import QUiLoader
 
 from ros_bard.LocalDataInterface import LocalDataInterface
@@ -43,7 +44,12 @@ class LocalUIInterface:
 
     def setup_style(self):
         self.elements_of_interest["current_status"].setHeaderLabels(["Name", "Type"])
-        self.elements_of_interest["last_status"].setHeaderLabels(["Name", "Type"])         
+        self.elements_of_interest["current_status"].header().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.elements_of_interest["current_status"].header().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+
+        self.elements_of_interest["last_status"].setHeaderLabels(["Name", "Type"])
+        self.elements_of_interest["last_status"].header().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.elements_of_interest["last_status"].header().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
 
 
     def setup_events(self):
