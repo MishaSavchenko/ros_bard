@@ -6,7 +6,7 @@ import json
 from pprint import pprint
 
 def main(): 
-    with open("/home/misha/code/ros_bard_ws/src/ros_bard/data/test2.json", "r") as file:
+    with open("/home/misha/code/ros_bard_ws/src/ros_bard/data/json_files/20240505154744.json", "r") as file:
         data = json.load(file)
     
     time_stamps = list(data.keys())
